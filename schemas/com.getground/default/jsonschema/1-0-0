@@ -1,0 +1,32 @@
+{
+    "$schema": "http://github.com/getground/iglu-schemas/schemas/com.getground/default/jsonschema/1-0-0#",
+    "self": {
+        "vendor": "com.getground",
+        "name": "default",
+        "format": "jsonschema",
+        "version": "1-0-0"
+    },
+    "type": "object",
+    "properties": {
+        "category": {
+            "type": "string"
+        },
+        "action": {
+            "type": "string"
+        },
+        "label": {
+            "type": ["string", "null"]
+        },
+        "user_id": {
+            "type": "string"
+        },
+        "pp_id": {
+            "type": ["string", "null"]
+        },
+        "company_id": {
+            "type": ["string", "null"]
+        }
+    },
+    "required": ["user_id", "category", "action"],
+    "additionalProperties": false
+}
