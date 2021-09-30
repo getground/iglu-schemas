@@ -12,13 +12,10 @@
             "type": "string"
         },
         "action": {
-            "type": "string"
-        },
-        "label": {
             "type": ["string", "null"]
         },
         "user_id": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "pp_id": {
             "type": ["string", "null"]
@@ -27,6 +24,6 @@
             "type": ["string", "null"]
         }
     },
-    "required": ["user_id", "category", "action"],
+    "required": ["category"],
     "additionalProperties": false
 }
