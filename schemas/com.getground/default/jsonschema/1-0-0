@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/getground/iglu-schemas/main/schemas/com.getground/default/jsonschema/1-0-0?token=ANI6JIPISQRLCEFGOUIJUZDBL4NXA",
+    "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
     "self": {
         "vendor": "com.getground",
         "name": "default",
