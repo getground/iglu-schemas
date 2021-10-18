@@ -22,8 +22,14 @@
         },
         "company_id": {
             "type": ["string", "null"]
+        },
+        "timestamp": {
+            "type": "string"
+        },
+        "property": {
+            "type": ["string", "null"]
         }
     },
-    "required": ["category"],
+    "required": ["category", "timestamp"],
     "additionalProperties": false
 }
