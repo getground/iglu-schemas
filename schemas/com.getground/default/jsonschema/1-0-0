@@ -24,12 +24,12 @@
             "type": ["string", "null"]
         },
         "timestamp": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "property": {
             "type": ["string", "null"]
         }
     },
-    "required": ["category", "timestamp"],
+    "required": ["category"],
     "additionalProperties": false
 }
