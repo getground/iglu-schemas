@@ -49,7 +49,7 @@ jobs:
     steps:
       - sync_bq:
           google_project_id: ${GOOGLE_PROJECT_ID_STAGING}
-          service_account: ${GCLOUD_SERVICE_KEY_STAGING}
+          service_account: ${GCLOUD_SERVICE_KEY_SNOWPLOW_STAGING}
           google_compute_zone: ${GOOGLE_COMPUTE_ZONE_STAGING}
   stg-restart:
     docker:
@@ -66,7 +66,7 @@ jobs:
     steps:
       - sync_bq:
           google_project_id: ${GOOGLE_PROJECT_ID_PREVIEW}
-          service_account: ${GCLOUD_SERVICE_KEY_PREVIEW}
+          service_account: ${GCLOUD_SERVICE_KEY_SNOWPLOW_PREVIEW}
           google_compute_zone: ${GOOGLE_COMPUTE_ZONE_PREVIEW}
   preview-restart:
     docker:
@@ -83,7 +83,7 @@ jobs:
     steps:
       - sync_bq:
           google_project_id: ${GOOGLE_PROJECT_ID_PRODUCTION}
-          service_account: ${GCLOUD_SERVICE_KEY_PRODUCTION}
+          service_account: ${GCLOUD_SERVICE_KEY_SNOWPLOW_PRODUCTION}
           google_compute_zone: ${GOOGLE_COMPUTE_ZONE_PRODUCTION}
   prod-restart:
     docker:
