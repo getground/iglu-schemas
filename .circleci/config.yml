@@ -1,0 +1,136 @@
+version: 2.1
+
+# Define the jobs we want to run for this project
+commands:
+  sync_bq:
+    parameters:
+      google_project_id:
+        type: string
+      service_account:
+        type: string
+      google_compute_zone:
+        type: string
+    steps:
+      - checkout
+      - run: 
+          name: "sync schema with bq"
+          command: |
+            echo << parameters.service_account >> > /service_account.json
+            export GOOGLE_APPLICATION_CREDENTIALS=/service_account.json
+
+            pip install --upgrade google-cloud-bigquery
+            python scripts/sync.py  --dir=./schemas --project=<< parameters.google_project_id >>
+  restart_service:
+    parameters:
+      google_project_id:
+        type: string
+      service_account:
+        type: string
+      google_compute_zone:
+        type: string
+      cluster_name:
+        type: string
+    steps:
+      - checkout
+      - run: 
+          name: "restart enricher pods"
+          command: |
+            echo << parameters.service_account >> | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project << parameters.google_project_id >>
+            gcloud --quiet config set compute/zone << parameters.google_compute_zone >>
+            
+            gcloud container clusters get-credentials << parameters.cluster_name >> --project << parameters.google_project_id >>
+            kubectl get pods -n snowplow --no-headers=true | awk '/enricher/{print $1}'| xargs  kubectl delete -n snowplow pod
+
+jobs:
+  stg-sync:
+    docker:
+      - image: python:3.10.1-bullseye
+    steps:
+      - sync_bq:
+          google_project_id: ${GOOGLE_PROJECT_ID_STAGING}
+          service_account: ${GCLOUD_SERVICE_KEY_SNOWPLOW_STAGING}
+          google_compute_zone: ${GOOGLE_COMPUTE_ZONE_STAGING}
+  stg-restart:
+    docker:
+      - image: gcr.io/google.com/cloudsdktool/cloud-sdk:266.0.0
+    steps:
+      - restart_service:
+          google_project_id: ${GOOGLE_PROJECT_ID_STAGING}
+          service_account: ${GCLOUD_SERVICE_KEY_STAGING}
+          google_compute_zone: ${GOOGLE_COMPUTE_ZONE_STAGING}
+          cluster_name: staging-cluster-v2
+  preview-sync:
+    docker:
+      - image: python:3.10.1-bullseye
+    steps:
+      - sync_bq:
+          google_project_id: ${GOOGLE_PROJECT_ID_PREVIEW}
+          service_account: ${GCLOUD_SERVICE_KEY_SNOWPLOW_PREVIEW}
+          google_compute_zone: ${GOOGLE_COMPUTE_ZONE_PREVIEW}
+  preview-restart:
+    docker:
+      - image: gcr.io/google.com/cloudsdktool/cloud-sdk:266.0.0
+    steps:
+      - restart_service:
+          google_project_id: ${GOOGLE_PROJECT_ID_PREVIEW}
+          service_account: ${GCLOUD_SERVICE_KEY_PREVIEW}
+          google_compute_zone: ${GOOGLE_COMPUTE_ZONE_PREVIEW}
+          cluster_name: preview-cluster-v2
+  prod-sync:
+    docker:
+      - image: python:3.10.1-bullseye
+    steps:
+      - sync_bq:
+          google_project_id: ${GOOGLE_PROJECT_ID_PRODUCTION}
+          service_account: ${GCLOUD_SERVICE_KEY_SNOWPLOW_PRODUCTION}
+          google_compute_zone: ${GOOGLE_COMPUTE_ZONE_PRODUCTION}
+  prod-restart:
+    docker:
+      - image: gcr.io/google.com/cloudsdktool/cloud-sdk:266.0.0
+    steps:
+      - restart_service:
+          google_project_id: ${GOOGLE_PROJECT_ID_PRODUCTION}
+          service_account: ${GCLOUD_SERVICE_KEY_PRODUCTION}
+          google_compute_zone: ${GOOGLE_COMPUTE_ZONE_PRODUCTION}
+          cluster_name: prod-cluster-v2
+
+workflows:
+  sync-schema:
+    jobs:
+      - stg-sync:
+          filters:
+            branches:
+              only:
+                - develop
+      - stg-restart:
+          requires:
+            - stg-sync
+          filters:
+            branches:
+              only:
+                - develop
+      - preview-sync:
+          filters:
+            branches:
+              only:
+                - develop
+      - preview-restart:
+          requires:
+            - preview-sync
+          filters:
+            branches:
+              only:
+                - develop
+      - prod-sync:
+          filters:
+            branches:
+              only:
+                - main
+      - prod-restart:
+          requires:
+            - prod-sync
+          filters:
+            branches:
+              only:
+                - main
