@@ -28,6 +28,9 @@
         },
         "property": {
             "type": ["string", "null"]
+        },
+        "uid": {
+            "type": ["string", "null"]
         }
     },
     "required": ["category"],
