@@ -41,6 +41,7 @@ commands:
             
             gcloud container clusters get-credentials << parameters.cluster_name >> --project << parameters.google_project_id >>
             kubectl get pods -n snowplow --no-headers=true | awk '/enricher/{print $1}'| xargs  kubectl delete -n snowplow pod
+            kubectl rollout restart -n snowplow deployment snowplow-bigquery-streamloader
 
 jobs:
   stg-sync:
