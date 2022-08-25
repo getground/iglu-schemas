@@ -2,7 +2,7 @@
     "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
     "self": {
         "vendor": "com.getground",
-        "name": "partner_portal",
+        "name": "default",
         "format": "jsonschema",
         "version": "1-0-0"
     },
@@ -14,7 +14,7 @@
         "action": {
             "type": ["string", "null"]
         },
-        "user_id": {
+        "consultant_id": {
             "type": ["string", "null"]
         },
         "pp_id": {
@@ -24,9 +24,6 @@
             "type": ["string", "null"]
         },
         "timestamp": {
-            "type": ["string", "null"]
-        },
-        "property": {
             "type": ["string", "null"]
         },
         "uid": {
