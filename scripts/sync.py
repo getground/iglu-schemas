@@ -23,7 +23,7 @@ def iglu_schema_to_bq_schema(data: dict) -> dict:
     return bq_fields
 
 def iglu_field_to_bq_field(prop: str, definition: dict, required: list) -> dict:
-    mode = 'REQUIRED' if prop in required else 'NULLABLE'
+    mode = 'NULLABLE'
     iglu_type = definition['type']
     if isinstance(iglu_type, str):
         field_type = iglu_type_to_bq[iglu_type]
