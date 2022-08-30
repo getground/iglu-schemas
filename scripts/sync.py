@@ -57,17 +57,28 @@ def update_json_schema(data_json: dict, current_schema: dict) -> tuple[dict, boo
     custom_field_name = parent_record_name(data_json)
     new_field_bq_schema = iglu_schema_to_bq_schema(data_json)
     
+    schema_exists = False
     for field in current_schema:
         if field['name'] == custom_field_name:
+            schema_exists = True
             break
     
-    changed = False
+    changed = not schema_exists
+    if not schema_exists:
+        new_schema = {
+            'name': custom_field_name,
+            'type': 'RECORD',
+            'mode': 'NULLABLE',
+            'fields': new_field_bq_schema
+        }
+        current_schema.append(new_schema)
+    else:
+        old_fields = [f['name'] for f in field['fields']]
+        for new_field in new_field_bq_schema:
+            if new_field['name'] not in old_fields:
+                field['fields'].append(new_field)
+                changed = True
 
-    old_fields = [f['name'] for f in field['fields']]
-    for new_field in new_field_bq_schema:
-        if new_field['name'] not in old_fields:
-            field['fields'].append(new_field)
-            changed = True
     if changed:
         print(f'{custom_field_name}: Detected change in schema.')
     else:
@@ -102,6 +113,7 @@ if __name__ == '__main__':
     
     if schema_changed:
         table = client.get_table(table_id)
+        print(current_schema)
         table.schema = current_schema
         table = client.update_table(table, ["schema"])
         print("SCHEMA_CHANGED")
