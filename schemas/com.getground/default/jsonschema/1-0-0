@@ -31,12 +31,6 @@
         },
         "uid": {
             "type": ["string", "null"]
-        },
-        "value_in_cents": {
-            "type": ["integer", "null"]
-        },
-        "currency": {
-            "type": ["string", "null"]
         }
     },
     "required": ["category"],
