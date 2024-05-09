@@ -1,0 +1,41 @@
+{
+    "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
+    "self": {
+        "vendor": "com.getground",
+        "name": "partner_portal",
+        "format": "jsonschema",
+        "version": "1-1-0"
+    },
+    "type": "object",
+    "properties": {
+        "category": {
+            "type": "string"
+        },
+        "action": {
+            "type": ["string", "null"]
+        },
+        "label": {
+            "type": ["string", "null"]
+        },
+        "consultant_id": {
+            "type": ["string", "null"]
+        },
+        "pp_id": {
+            "type": ["string", "null"]
+        },
+        "company_id": {
+            "type": ["string", "null"]
+        },
+        "timestamp": {
+            "type": ["string", "null"]
+        },
+        "uid": {
+            "type": ["string", "null"]
+        },
+        "extra": {
+            "type": ["string", "null"]
+        }
+    },
+    "required": ["category"],
+    "additionalProperties": false
+}
